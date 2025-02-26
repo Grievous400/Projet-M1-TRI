@@ -12,7 +12,7 @@ Changement des volumes **postgres** et **redis** en bind mount.
 
 Les scripts ([Script_Backup_PostgresRedis](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_backup.sh), [Script_Backup_Influxdb](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_backup_influxdb.sh), [Script_Restore_PostgresRedis](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_restore.sh) et [Script_Restore_Influxdb](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_restore_influxdb.sh)) doivent être lancés en <ins>**sudo**</ins> et dans le dossier du docker compose.
 
-Pour faciliter l'automatisation, [cron](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/cron.md) sera utiliser sur le serveur linux pour lancer le [script_backup](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_backup.sh).
+Pour faciliter l'automatisation, [cron](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/cron.md) sera utiliser sur le serveur linux pour lancer les différents scripts de backup.
 
 L'installation d'[OpenVPN](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/vpn.md) sur le serveur Chirpstack.
 
