@@ -13,6 +13,7 @@ mkdir -p "$SERVER_DIR/redisdata" "$SERVER_DIR/postgresqldata"
 if [ -f "$SAVE_DIR/dump.rdb" ]; then
     cp "$SAVE_DIR/dump.rdb" "$SERVER_DIR/redisdata"
     echo "Fichier dump.rdb copié dans le dossier redisdata."
+    logger "Backup BDD ${SAVE_DIR} to Redis"
 else
     echo "Erreur : Le fichier dump.rdb n'existe pas."
     exit 1
@@ -31,6 +32,7 @@ if [ -f "$SAVE_DIR/dump.sql" ]; then
     docker compose down
     # Relance le Docker Compose avec tout les services
     docker compose up -d
+    logger "Backup BDD ${SAVE_DIR} to Postgres"
 else
     echo "Erreur : Le fichier dump.sql n'existe pas."
     exit 1
