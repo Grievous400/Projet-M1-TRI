@@ -25,6 +25,7 @@ if [ -f "$SERVER_DIR/redisdata/dump.rdb" ]; then
     echo "Fichier dump.rdb copié dans le dossier actuel."
     # Permet au Synology de copier le fichier (par défaut : 600 root)
     chmod 644 "$SAVE_DIR/dump.rdb"
+    logger "Backup BDD Redis to ${SAVE_DIR}"
 else
     echo "Erreur : Le fichier dump.rdb n'existe pas."
     exit 1
@@ -39,6 +40,7 @@ cd "$SERVER_DIR" || exit 1
 # Vérification du code de retour de la commande docker
 if [ $? -eq 0 ]; then
     echo "Fichier dump.sql copié dans le dossier actuel."
+    logger "Backup BDD Postgres to ${SAVE_DIR}"
 else
     echo "Erreur : le fichier dump.sql n'a pas pu être extrait."
     exit 1
