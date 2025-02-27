@@ -117,4 +117,11 @@ services:
 
 Malgré les corrections apportées, le problème de chargement des assets persiste. Les fichiers CSS et JS continuent de ne pas se charger correctement via Traefik. 
 
+Le meme porblème de path existe avec influxdb. 
+
+Voici des liens qui s'exprime sur le sujet sur les forums d'influxdb : 
+
+https://github.com/influxdata/influxdb/issues/15721
+
+https://github.com/influxdata/influxdb/issues/21009
 
