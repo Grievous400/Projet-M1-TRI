@@ -7,13 +7,14 @@ timedatectl set-timezone Europe/Paris
 
 <ins>Installation des services (OpenVPN dispo sur les dépôts EPEL)</ins>
 ```
-yum update
-yum install epel-release
-yum install openvpn easy-rsa
+dnf update
+dnf install epel-release
+dnf install openvpn easy-rsa
 ```
 
 <ins>Initialisation de la PKI</ins>
 ```
+mkdir /etc/openvpn/easy-rsa
 cd /etc/openvpn/easy-rsa
 ./easyrsa init-pki
 ```
