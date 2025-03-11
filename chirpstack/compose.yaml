@@ -13,9 +13,21 @@ services:
     environment:
       - MQTT_BROKER_HOST=mosquitto
       - REDIS_HOST=redis
+      - REDIS_PASSWORD=CbnhrqBatcVSMzyuH5ER3x
       - POSTGRESQL_HOST=postgres
     ports:
       - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chirpstack.rule=Host(`preprod2.univ-lorawan.fr`)"
+      - "traefik.http.routers.chirpstack.entrypoints=websecure"
+      - "traefik.http.routers.chirpstack.tls.certresolver=myresolver"
+      - "traefik.http.services.chirpstack.loadbalancer.server.port=8080"
+
+
+
+    networks:
+      - mon-reseau
 
   chirpstack-gateway-bridge:
     image: chirpstack/chirpstack-gateway-bridge:4
@@ -30,6 +42,8 @@ services:
       - INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/command/#
     depends_on:
       - mosquitto
+    networks:
+      - mon-reseau
   
 #  chirpstack-gateway-bridge-basicstation:
 #    image: chirpstack/chirpstack-gateway-bridge:4
@@ -42,14 +56,16 @@ services:
 #    depends_on:
 #      - mosquitto
 
-  chirpstack-rest-api:
-    image: chirpstack/chirpstack-rest-api:4
-    restart: unless-stopped
-    command: --server chirpstack:8080 --bind 0.0.0.0:8090 --insecure
-    ports:
-      - 8090:8090
-    depends_on:
-      - chirpstack
+  # chirpstack-rest-api:
+  #   image: chirpstack/chirpstack-rest-api:4
+  #   restart: unless-stopped
+  #   command: --server chirpstack:8080 --bind 0.0.0.0:8090 --insecure
+  #   ports:
+  #     - 8090:8090
+  #   depends_on:
+  #     - chirpstack
+  #   networks:
+  #     - mon-reseau
 
   postgres:
     image: postgres:14-alpine
@@ -59,13 +75,19 @@ services:
       - ./postgresqldata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=root
+    networks:
+      - mon-reseau
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --save 300 1 --save 60 100 --appendonly no
+    command: redis-server --save 300 1 --save 60 100 --appendonly no --requirepass CbnhrqBatcVSMzyuH5ER3x
+    ports:
+      - 6379:6379
     volumes:
       - ./redisdata:/data
+    networks:
+      - mon-reseau
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -74,7 +96,45 @@ services:
       - 1883:1883
     volumes: 
       - ./configuration/mosquitto/config/:/mosquitto/config/
+    networks:
+      - mon-reseau
+
+  reverse-proxy:
+    # The official v3 Traefik docker image
+    image: traefik:v3.1
+    # Enables the web UI and tells Traefik to listen to docker
+    command: 
+      - --api.insecure=true 
+      - --providers.docker
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.email=louis.claudel@etu.univ-smb.fr
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.myresolver.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+      - --log.level=DEBUG
+      - --accesslog=true
+      - --accesslog.addinternals
+
+    ports:
+      # The HTTP port
+      - "80:80"
+      - "443:443"
+
+      # The Web UI (enabled by --api.insecure=true)
+      - "8085:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - mon-reseau
+
 
 volumes:
   postgresqldata:
   redisdata:
+
+networks:
+  mon-reseau:
+    external: true
