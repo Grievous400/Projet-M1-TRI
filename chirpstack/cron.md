@@ -14,6 +14,7 @@ crontab -e
 Enfin, sous cron, rajouter la ligne suivante et quitter. Elle permet de lancer le script de backup toutes les 15 minutes.
 ```
 */15 * * * * /home/almalinux/thomas/chirpstack/script_backup.sh
+*/15 * * * * /home/almalinux/florent/iot-app/script_backup_influxdb.sh
 ```
 
 Pour être certain que la commande a bien été prise en compte, on peut se servir de la commande suivante pour voir les tâches paramétrer.
