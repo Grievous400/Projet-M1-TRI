@@ -4,7 +4,7 @@
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Défini une variable pour le chemin d'acces au serveur
-SERVER_DIR="/home/almalinux/thomas/chirpstack"
+SERVER_DIR="/home/almalinux/florent/iot-app"
 
 # Défini une variable pour le chemin d'acces a la sauvegarde
 DEST_FOLDER="/var/backup_influxdb"
