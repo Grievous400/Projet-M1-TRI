@@ -11,5 +11,5 @@ logger "Restore influxdb with ${DEST_FOLDER}"
 # Copie des sauvegardes dans le dossier /root/influx_backup
 /usr/bin/docker cp "${DEST_FOLDER}" iot-app-influxdb-1:/root/influx_backup
 
-# Restaure et remplaces les données déjà existante avec --full
+# Restaure et remplace les données déjà existante avec --full
 /usr/bin/docker exec iot-app-influxdb-1 influx restore /root/influx_backup --full
