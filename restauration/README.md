@@ -24,6 +24,8 @@ Le script permet de charger la configuration d'OpenVPN, puis d'installer/configu
 
 Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
+Les fichiers nécessaires pour OpenVPN sont : **ca.crt**, **dm.pem**, **server.conf**, **server.crt**, **server.key**, **ta.key**.
+
 ### 3ème partie : Script pour la mise en place de docker ainsi que des différents docker composes
 
 
