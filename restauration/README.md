@@ -22,7 +22,7 @@ Pour cette partie, nous devons utiliser un script qui permet de préparer la mac
 
 Le script permet de charger la configuration d'OpenVPN, puis d'installer/configurer le firewall, OpenVPN et de faire en sorte que la liaison VPN soit prête à recevoir la connexion du NAS Synology.
 
-Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (adresse IP, nom d'utilisateur ainsi que son mot de passe).
+Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
 ### 3ème partie : Script pour la mise en place de docker ainsi que des différents docker composes
 
