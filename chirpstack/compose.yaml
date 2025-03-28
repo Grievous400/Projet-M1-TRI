@@ -15,17 +15,14 @@ services:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=CbnhrqBatcVSMzyuH5ER3x
       - POSTGRESQL_HOST=postgres
-    ports:
-      - 8080:8080
+    #ports:
+    #  - 8080:8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.chirpstack.rule=Host(`preprod2.univ-lorawan.fr`)"
       - "traefik.http.routers.chirpstack.entrypoints=websecure"
       - "traefik.http.routers.chirpstack.tls.certresolver=myresolver"
       - "traefik.http.services.chirpstack.loadbalancer.server.port=8080"
-
-
-
     networks:
       - mon-reseau
 
@@ -108,6 +105,8 @@ services:
       - --providers.docker
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
+      - --entrypoints.mqtt.address=:8883
+      #- --entrypoints.mqtt.alpn=protocol
       - --certificatesresolvers.myresolver.acme.tlschallenge=true
       - --certificatesresolvers.myresolver.acme.email=louis.claudel@etu.univ-smb.fr
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
@@ -120,7 +119,7 @@ services:
       # The HTTP port
       - "80:80"
       - "443:443"
-
+      - "8883:8883"
       # The Web UI (enabled by --api.insecure=true)
       - "8085:8080"
     volumes:
@@ -129,7 +128,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - mon-reseau
-
 
 volumes:
   postgresqldata:
