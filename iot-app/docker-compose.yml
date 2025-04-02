@@ -1,0 +1,93 @@
+services: 
+
+  mosquitto-clients:
+    #For extern clients
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    #ports:
+    #  - 8883:8883
+    volumes:
+      - ./mosquitto-clients/config:/mosquitto/config
+    #  - ./lets-encrypt-certs/mosquitto:/mosquitto/certs:ro
+    
+    environment:
+      - TZ=Europe/Paris
+    networks:
+      - mon-reseau
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mosquitto-clients.entrypoints=mqtt"
+      #- "traefik.tcp.routers.mosquitto-clients.rule=HostSNI(`preprod2.univ-lorawan.fr`)"
+      - "traefik.tcp.routers.mosquitto-clients.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mosquitto-clients.tls=true"
+      - "traefik.tcp.routers.mosquitto-clients.service=mosquitto-clients"
+      - "traefik.tcp.routers.mosquitto-clients.tls.certresolver=myresolver"
+      - "traefik.tcp.services.mosquitto-clients.loadbalancer.server.port=1883"
+      #- "traefik.tcp.services.mqttservice.loadbalancer.server.port=8883"
+
+  telegraf:
+      image: telegraf
+      volumes:
+        - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+      environment:
+        - INFLUX_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+        # - MQTT_PATRIMOINE_PASSWORD=$MQTT_PATRIMOINE_PASSWORD
+        - MQTT_TELEGRAF_PASSWORD=${MQTT_TELEGRAF_PASSWORD}
+      networks:
+        - mon-reseau
+
+  influxdb:
+    #One instance of influxdb. Multiple Buckets for different applications.
+    #Bucket : Patrimoine
+    image: influxdb:2.7.6
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=USMB
+      - DOCKER_INFLUXDB_INIT_BUCKET=First #If the Bucket isn't created, the container will fail to start
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+      - TZ=Europe/Paris
+      - INFLUXDB_UI_PATH_PREFIX=/influxdb
+
+    volumes:
+      # rm -rf ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/
+      # mkdir -p ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/config ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/data
+      - ./influx_data/data:/var/lib/influxdb2:rw
+      - ./influx_data/config:/etc/influxdb2:rw
+    #ports:
+    #  - "8086:8086"
+    networks:
+      - mon-reseau
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.influxdb.rule=Host(`influxdb.preprod2.univ-lorawan.fr`) "
+      #&& PathPrefix(`/influxdb`)"
+      - "traefik.http.routers.influxdb.entrypoints=websecure"
+      - "traefik.http.routers.influxdb.tls.certresolver=myresolver"
+      #- "traefik.http.middlewares.influxdb-stripprefix.stripprefix.prefixes=/influxdb/"
+      #- "traefik.http.routers.influxdb.middlewares=influxdb-stripprefix"
+      - "traefik.http.services.influxdb.loadbalancer.server.port=8086"
+      
+  grafana:
+    image: grafana/grafana-oss:11.0.1
+    volumes:
+      - ./grafana/data:/var/lib/grafana:rw
+      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini
+    #ports:
+    #  - "3002:3002"
+    environment:
+      - TZ=Europe/Paris
+      - GF_SERVER_ROOT_URL=https://preprod2.univ-lorawan.fr/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    networks:
+      - mon-reseau
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`preprod2.univ-lorawan.fr`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=myresolver"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3002"
+networks:
+  mon-reseau:
+    external: true

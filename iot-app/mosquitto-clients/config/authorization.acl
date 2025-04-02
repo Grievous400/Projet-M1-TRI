@@ -1,0 +1,11 @@
+user test
+topic readwrite application/94209428-d07a-43d7-a441-bdbcb3491dda/#
+
+user telegraf
+topic readwrite #
+
+user florent
+topic readwrite #
+topic readwrite $SYS/#
+
+
