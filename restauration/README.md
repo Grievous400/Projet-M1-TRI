@@ -26,8 +26,10 @@ Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes va
 
 Les fichiers nécessaires pour OpenVPN sont : **ca.crt**, **dm.pem**, **server.conf**, **server.crt**, **server.key**, **ta.key**.
 
-### 3ème partie : Script pour la mise en place de docker ainsi que des différents docker composes
+## 3ème partie : Script pour la mise en place de docker ainsi que des différents fichiers qui sont liées à celui-ci
 
+[Script n°2](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script2.sh)
 
-### 4ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
+## 4ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
 
+[Script n°3](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script3.sh)
