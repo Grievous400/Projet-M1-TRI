@@ -2,7 +2,7 @@
 
 ## 1er partie : Acquisition d'un VPS ou remise à zéro de celui-ci
 
-Pour cette partie, nous devons avoir une machine VPS prête pour la suite de la procèdure. Pour cela, nous utilisions OVH pour avoir accès à des VPS prêt à l'emploi.
+Pour cette partie, nous devons avoir une machine VPS prête pour la suite de la procèdure. Pour cela, nous utilisons l'entreprise OVH pour avoir accès à des VPS prêt à l'emploi.
 
 ![image](https://github.com/user-attachments/assets/56d58b6f-48e4-4278-b169-04da5fa4824e)
 
