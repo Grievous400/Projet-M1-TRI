@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REMOTE_HOST="XXXXX"
+REMOTE_HOST="XXX.XXX.XXX.XXX"
 REMOTE_USER="almalinux"
 SSH_KEY_PATH="/home/etudiant/sshkeys/private_key_openssh"
 
@@ -39,8 +39,9 @@ for path in "${!permissions[@]}"; do
         echo "Avertissement: $path n'existe pas."
     fi
 done
+
 sudo chmod 600 /home/almalinux/thomas/chirpstack/letsencrypt/acme.json
-sudo setfacl -R -m u:almalinux:rwx /home/almalinux/thomas/chirpstack/*
+sudo setfacl -R -m u:almalinux:rwx /home/almalinux/thomas/*
 sudo setfacl -R -m u:almalinux:rwx /home/almalinux/florent/*
 
 EOF
