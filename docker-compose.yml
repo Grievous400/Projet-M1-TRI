@@ -1,82 +1,95 @@
-version: '3.9'
-
 services:
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: your_root_password
+
+  mosquitto-clients:
+    #For extern clients
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    #ports:
+    #  - 8883:8883
     volumes:
-      - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mosquitto-clients/config:/mosquitto/config
+    #  - ./lets-encrypt-certs/mosquitto:/mosquitto/certs:ro
 
-  wordpress1:
-    depends_on:
-      - db
-    image: wordpress:latest
-    ports:
-      - "8080:80"
     environment:
-      WAIT_HOSTS: db:3306
-      WAIT_HOSTS_TIMEOUT: 30
-      WAIT_SLEEP_INTERVAL: 10
-      WAIT_HOST_CONNECT_TIMEOUT: 30
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: your_user
-      WORDPRESS_DB_PASSWORD: your_password
-      WORDPRESS_DB_NAME: wordpress
+      - TZ=Europe/Paris
+    networks:
+      - mon-reseau
     labels:
-      - "traefik.http.routers.wordpress1.rule=Host(`claudel-tri.usmb-tri.fr`)"
-      - "traefik.http.services.wordpress1.loadbalancer.server.port=80"
-      - "traefik.http.routers.wordpress1.entrypoints=web,websecure"
-      - "traefik.http.routers.wordpress1.tls.certresolver=myresolver"
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.mosquitto-clients.entrypoints=mqtt"
+      #- "traefik.tcp.routers.mosquitto-clients.rule=HostSNI(`preprod2.XXXXXXXX.fr`)"
+      - "traefik.tcp.routers.mosquitto-clients.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.mosquitto-clients.tls=true"
+      - "traefik.tcp.routers.mosquitto-clients.service=mosquitto-clients"
+      - "traefik.tcp.routers.mosquitto-clients.tls.certresolver=myresolver"
+      - "traefik.tcp.services.mosquitto-clients.loadbalancer.server.port=1883"
+      #- "traefik.tcp.services.mqttservice.loadbalancer.server.port=8883"
 
+  telegraf:
+      image: telegraf
+      volumes:
+        - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+      environment:
+        - INFLUX_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+        # - MQTT_PATRIMOINE_PASSWORD=$MQTT_PATRIMOINE_PASSWORD
+        - MQTT_TELEGRAF_PASSWORD=${MQTT_TELEGRAF_PASSWORD}
+      networks:
+        - mon-reseau
 
-  wordpress2:
-    depends_on:
-      - db
-    image: wordpress:latest
-    ports:
-      - "8081:80"
+  influxdb:
+    #One instance of influxdb. Multiple Buckets for different applications.
+    #Bucket : Patrimoine
+    image: influxdb:2.7.6
     environment:
-      WAIT_HOSTS: db:3306
-      WAIT_HOSTS_TIMEOUT: 30
-      WAIT_SLEEP_INTERVAL: 10
-      WAIT_HOST_CONNECT_TIMEOUT: 30
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: your_user2
-      WORDPRESS_DB_PASSWORD: your_password2
-      WORDPRESS_DB_NAME: wordpress2
-    labels:
-      - "traefik.http.routers.wordpress2.rule=Host(`durand-tri.usmb-tri.fr`)"
-      - "traefik.http.services.wordpress2.loadbalancer.server.port=80"
-      - "traefik.http.routers.wordpress2.entrypoints=web,websecure"
-      - "traefik.http.routers.wordpress2.tls.certresolver=myresolver"
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=USMB
+      - DOCKER_INFLUXDB_INIT_BUCKET=First #If the Bucket isn't created, the container will fail to start
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+      - TZ=Europe/Paris
+      - INFLUXDB_UI_PATH_PREFIX=/influxdb
 
-  reverse-proxy:
-    # The official v3 Traefik docker image
-    image: traefik:v3.1
-    # Enables the web UI and tells Traefik to listen to docker
-    command: 
-      - --api.insecure=true 
-      - --providers.docker
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.myresolver.acme.tlschallenge=true
-      - --certificatesresolvers.myresolver.acme.email=louis.claudel@etu.univ-smb.fr
-      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.myresolver.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --log.level=DEBUG
-    ports:
-      # The HTTP port
-      - "80:80"
-      - "443:443"
-
-      # The Web UI (enabled by --api.insecure=true)
-      - "8085:8080"
     volumes:
-      # So that Traefik can listen to the Docker events
-      - ./letsencrypt:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock
+      # rm -rf ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/
+      # mkdir -p ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/config ~/chirpstack.univ-lorawan.fr/influx_data_patrimoine/data
+      - ./influx_data/data:/var/lib/influxdb2:rw
+      - ./influx_data/config:/etc/influxdb2:rw
+    #ports:
+    #  - "8086:8086"
+    networks:
+      - mon-reseau
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.influxdb.rule=Host(`influxdb.preprod2.XXXXXXXX.fr.fr`) "
+      #&& PathPrefix(`/influxdb`)"
+      - "traefik.http.routers.influxdb.entrypoints=websecure"
+      - "traefik.http.routers.influxdb.tls.certresolver=myresolver"
+      #- "traefik.http.middlewares.influxdb-stripprefix.stripprefix.prefixes=/influxdb/"
+      #- "traefik.http.routers.influxdb.middlewares=influxdb-stripprefix"
+      - "traefik.http.services.influxdb.loadbalancer.server.port=8086"
 
-volumes:
-  db_data:
+  grafana:
+    image: grafana/grafana-oss:11.0.1
+    volumes:
+      - ./grafana/data:/var/lib/grafana:rw
+      - ./grafana/config/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    #ports:
+    #  - "3002:3002"
+    environment:
+      - TZ=Europe/Paris
+      - GF_SERVER_ROOT_URL=https://preprod2.univ-lorawan.fr/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    networks:
+      - mon-reseau
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`preprod2.XXXXXXXX.fr`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=myresolver"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3002"
+networks:
+  mon-reseau:
+    external: true
