@@ -18,6 +18,8 @@ L'installation d'[OpenVPN](https://github.com/Grievous400/Projet-M1-TRI/blob/mai
 
 Le paramétrage du Synology pour mettre en place le [VPN](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/synology_vpn.md) et [Active Backup](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/synology_activebackup.md).
 
+(Optionnel : L'affichage des droits des différents dossiers/fichiers présent sur le serveur pour éviter tout problèmes de backup des saves grâce à un [Script](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/script_droits.md)
+
 (Optionnel : Le paramétrage de l'[Agent Linux Active Backup](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/synology_agentlinux.md) pour ajouter un Serveur Physique sous Linux)
 
 (Optionnel : Le paramétrage pour créer une VM puis la restauration d'une backup d'un [Serveur Physique Active Backup avec le Recovery Media](https://github.com/Grievous400/Projet-M1-TRI/blob/main/chirpstack/synology_linuxrecovery.md).
