@@ -41,7 +41,7 @@ services:
       - mosquitto
     networks:
       - mon-reseau
-  
+
 #  chirpstack-gateway-bridge-basicstation:
 #    image: chirpstack/chirpstack-gateway-bridge:4
 #    restart: unless-stopped
@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
     ports:
       - 1883:1883
-    volumes: 
+    volumes:
       - ./configuration/mosquitto/config/:/mosquitto/config/
     networks:
       - mon-reseau
@@ -100,8 +100,8 @@ services:
     # The official v3 Traefik docker image
     image: traefik:v3.1
     # Enables the web UI and tells Traefik to listen to docker
-    command: 
-      - --api.insecure=true 
+    command:
+      - --api.insecure=true
       - --providers.docker
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
