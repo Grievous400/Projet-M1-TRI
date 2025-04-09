@@ -13,13 +13,13 @@ services:
     environment:
       - MQTT_BROKER_HOST=mosquitto
       - REDIS_HOST=redis
-      - REDIS_PASSWORD=CbnhrqBatcVSMzyuH5ER3x
+      - REDIS_PASSWORD=XXXXXX
       - POSTGRESQL_HOST=postgres
     #ports:
     #  - 8080:8080
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chirpstack.rule=Host(`preprod2.univ-lorawan.fr`)"
+      - "traefik.http.routers.chirpstack.rule=Host(`preprod2.XXXXXX.fr`)"
       - "traefik.http.routers.chirpstack.entrypoints=websecure"
       - "traefik.http.routers.chirpstack.tls.certresolver=myresolver"
       - "traefik.http.services.chirpstack.loadbalancer.server.port=8080"
@@ -71,14 +71,14 @@ services:
       - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
       - ./postgresqldata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=root
+      - POSTGRES_PASSWORD=XXXXXX
     networks:
       - mon-reseau
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --save 300 1 --save 60 100 --appendonly no --requirepass CbnhrqBatcVSMzyuH5ER3x
+    command: redis-server --save 300 1 --save 60 100 --appendonly no --requirepass XXXXXX
     ports:
       - 6379:6379
     volumes:
@@ -108,7 +108,7 @@ services:
       - --entrypoints.mqtt.address=:8883
       #- --entrypoints.mqtt.alpn=protocol
       - --certificatesresolvers.myresolver.acme.tlschallenge=true
-      - --certificatesresolvers.myresolver.acme.email=louis.claudel@etu.univ-smb.fr
+      - --certificatesresolvers.myresolver.acme.email=XXXXXX
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.myresolver.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=DEBUG
