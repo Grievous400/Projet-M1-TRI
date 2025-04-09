@@ -35,7 +35,8 @@ sudo systemctl status docker
 #echo "---------------------------------------"
 #sudo usermod -aG docker almalinux
 #echo "$DOCKER_TOKEN" | docker login --username $DOCKER_USERNAME --password-stdin
-#sudo docker run hello-world
+sudo docker run hello-world
+sudo docker network create mon-reseau
 
 echo "---------------------------------------"
 echo "Paramétrage des dossiers pour les sauvegardes."
