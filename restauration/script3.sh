@@ -35,6 +35,8 @@ for path in "${!permissions[@]}"; do
     echo "Modification de $path - Propriétaire: $owner, Groupe: $group"
     sudo chown "$owner:$group" "$path"
 done
+
+sudo chmod 600 /home/almalinux/thomas/chirpstack/letsencrypt/acme.json
 EOF
 echo "---------------------------------------"
 echo "Script terminé."
