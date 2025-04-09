@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REMOTE_HOST="XXX.XXX.XXX.XXX"
+REMOTE_HOST="XXXXX"
 REMOTE_USER="almalinux"
 SSH_KEY_PATH="/home/etudiant/sshkeys/private_key_openssh"
 
@@ -8,7 +8,7 @@ SSH_KEY_PATH="/home/etudiant/sshkeys/private_key_openssh"
 echo "---------------------------------------"
 echo "Exécution du script de configuration."
 echo "---------------------------------------"
-ssh -i $SSH_KEY_PATH $REMOTE_USER@$REMOTE_HOST << EOF
+ssh -i $SSH_KEY_PATH $REMOTE_USER@$REMOTE_HOST << 'EOF'
 declare -A permissions=(
     ["/home/almalinux/florent/iot-app/mosquitto-clients/config"]="1883|1883"
     ["/home/almalinux/florent/iot-app/mosquitto-clients/config/mosquitto.conf"]="1883|1883"
@@ -29,14 +29,20 @@ declare -A permissions=(
 )
 
 for path in "${!permissions[@]}"; do
-    owner_group=${permissions[$path]}
-    owner=$(echo "$owner_group" | cut -d'|' -f1)
-    group=$(echo "$owner_group" | cut -d'|' -f2)
-    echo "Modification de $path - Propriétaire: $owner, Groupe: $group"
-    sudo chown "$owner:$group" "$path"
+    if [ -e "$path" ]; then
+        owner_group=${permissions[$path]}
+        owner=$(echo "$owner_group" | cut -d'|' -f1)
+        group=$(echo "$owner_group" | cut -d'|' -f2)
+        echo "Modification de $path - Propriétaire: $owner, Groupe: $group"
+        sudo chown "$owner:$group" "$path"
+    else
+        echo "Avertissement: $path n'existe pas."
+    fi
 done
-
 sudo chmod 600 /home/almalinux/thomas/chirpstack/letsencrypt/acme.json
+sudo setfacl -R -m u:almalinux:rwx /home/almalinux/thomas/chirpstack/*
+sudo setfacl -R -m u:almalinux:rwx /home/almalinux/florent/*
+
 EOF
 echo "---------------------------------------"
 echo "Script terminé."
