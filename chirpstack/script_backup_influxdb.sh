@@ -6,6 +6,8 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # Défini une variable pour le chemin d'acces au serveur
 SERVER_DIR="/home/almalinux/florent/iot-app"
 
+sudo setfacl -R -m u:almalinux:rx "$SERVER_DIR"/*
+
 # Défini une variable pour le chemin d'acces a la sauvegarde
 DEST_FOLDER="/var/backup_influxdb"
 logger "Backup influxdb to ${DEST_FOLDER}"
