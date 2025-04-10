@@ -94,3 +94,10 @@ cd /home/almalinux/florent/iot-app/
 docker compose up -d
 ```
 
+Puis une fois docker compose démarré, un faut lancer le script de restauration.
+
+```
+sudo /home/almalinux/florent/iot-app/script_restore_influxdb.sh
+```
+
+Et voilà, les différents services ont pu être restaurés et remis comme à l'état au moment de la sauvegarde.
