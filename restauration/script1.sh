@@ -43,7 +43,7 @@ ssh -i $SSH_KEY_PATH $REMOTE_USER@$REMOTE_HOST << EOF
 echo "---------------------------------------"
 echo "Ajout d'un utilisateur pour la connexion VPN."
 echo "---------------------------------------"
-sudo useradd -m $USERNAME_VPN
+sudo useradd -M $USERNAME_VPN
 echo "$USERNAME_VPN:$PASSWORD_VPN" | sudo chpasswd
 sudo id $USERNAME_VPN
 
