@@ -91,7 +91,7 @@ Puis, une fois la restauration terminée, on peut lancer le docker compose dans 
 
 ```
 cd /home/almalinux/thomas/chirpstack/
-docker compose up -d
+sudo docker compose up -d
 ```
 
 Puis pour la deuxième partie, il faut lancer déjà le docker compose dans le dossier iot-app qui content les services suivant :
@@ -103,7 +103,7 @@ Puis pour la deuxième partie, il faut lancer déjà le docker compose dans le d
 
 ```
 cd /home/almalinux/florent/iot-app/
-docker compose up -d
+sudo docker compose up -d
 ```
 
 Puis une fois docker compose démarré, un faut lancer le script de restauration.
