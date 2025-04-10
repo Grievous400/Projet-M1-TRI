@@ -40,9 +40,9 @@ for path in "${!permissions[@]}"; do
     fi
 done
 
+sudo setfacl -R -m u:almalinux:rx /home/almalinux/thomas/*
+sudo setfacl -R -m u:almalinux:rx /home/almalinux/florent/*
 sudo chmod 600 /home/almalinux/thomas/chirpstack/letsencrypt/acme.json
-sudo setfacl -R -m u:almalinux:rwx /home/almalinux/thomas/*
-sudo setfacl -R -m u:almalinux:rwx /home/almalinux/florent/*
 
 EOF
 echo "---------------------------------------"
