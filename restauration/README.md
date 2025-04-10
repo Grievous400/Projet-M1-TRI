@@ -32,6 +32,10 @@ Le script permet de :
 
 Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
+```
+sudo ./script1.sh
+```
+
 Les fichiers nécessaires pour OpenVPN sont : **ca.crt**, **dm.pem**, **server.conf**, **server.crt**, **server.key**, **ta.key**.
 
 ## 3ème partie : Script pour la mise en place de docker ainsi que des différents fichiers qui sont liées à celui-ci
@@ -47,6 +51,10 @@ Le script permet de :
 * Installation / configuration de docker.
 * Paramétrage des dossiers pour la sauvegarde.
 
+```
+sudo ./script2.sh
+```
+
 Ensuite une fois le script fini, il faut retourner sur le **Synology Active Backup** et permettre la restauration des différentes sauvegardes effectuées au préalable.
 
 ## 4ème partie : Script pour modifier les droits des fichiers vitaux au docker compose
@@ -59,6 +67,10 @@ Lors qu'ils sont copiées par Synology (Active Backup), l'utilisateur et le grou
 
 Le script permet de :
 * Adapter les droits aux bons fichiers.
+
+```
+sudo ./script3.sh
+```
 
 ## 5ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
 
