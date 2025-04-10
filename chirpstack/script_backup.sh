@@ -9,6 +9,8 @@ SERVER_DIR="/home/almalinux/thomas/chirpstack"
 # Défini une variable pour le chemin d'acces a la sauvegarde
 SAVE_DIR="/var/backup"
 
+sudo setfacl -R -m u:almalinux:rx "$SERVER_DIR"/*
+
 # Vérifie si le dossier "sauvegardes" existe
 if [ ! -d "$SAVE_DIR" ]; then
     # Si le dossier n'existe pas, le créer
