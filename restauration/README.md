@@ -33,7 +33,7 @@ Le script permet de :
 Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
 ```
-sudo ./script1.sh
+./script1.sh
 ```
 
 Les fichiers nécessaires pour OpenVPN sont : **ca.crt**, **dm.pem**, **server.conf**, **server.crt**, **server.key**, **ta.key**.
@@ -52,7 +52,7 @@ Le script permet de :
 * Paramétrage des dossiers pour la sauvegarde.
 
 ```
-sudo ./script2.sh
+./script2.sh
 ```
 
 Ensuite une fois le script fini, il faut retourner sur le **Synology Active Backup** et permettre la restauration des différentes sauvegardes effectuées au préalable.
@@ -69,7 +69,7 @@ Le script permet de :
 * Adapter les droits aux bons fichiers.
 
 ```
-sudo ./script3.sh
+./script3.sh
 ```
 
 ## 5ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
