@@ -23,12 +23,12 @@ Pour cette partie, nous utiliserons un script qui permet de préparer la machine
 [Script n°1](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script1.sh)
 
 Le script permet de :
-* Chargement la configuration d'OpenVPN
-* Création d'un utilisateur utilisé pour la connexion VPN
-* Changement du hostname
-* Désactivation de l'IPv6 (du à un problème avec docker hub)
-* Installer / configurer le firewall
-* Installer / configurer OpenVPN
+* Chargement la configuration d'OpenVPN.
+* Création d'un utilisateur utilisé pour la connexion VPN.
+* Changement du hostname.
+* Désactivation de l'IPv6 (du à un problème avec docker hub).
+* Installation / configuration le firewall.
+* Installation / configuration OpenVPN.
 
 Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
@@ -40,18 +40,57 @@ Ensuite, dans cette partie, nous utiliserons un script pour préparer la machine
 
 [Script n°2](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script2.sh)
 
-Avant de lancer le script, il faut vérifier sur le Synology que nous sommes bien connecté sur le VPN du VPS. Vu que c'est
+Avant de lancer le script, il faut vérifier sur le Synology que nous sommes bien connecté sur le VPN du VPS.
 
 Le script permet de :
-* Tester la liaison VPN avec le Synology
-* 
-*
-*
-*
-*
+* Tester la liaison VPN avec le Synology.
+* Installation / configuration de docker.
+* Paramétrage des dossiers pour la sauvegarde.
 
-## 4ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
+Ensuite une fois le script fini, il faut retourner sur le **Synology Active Backup** et permettre la restauration des différentes sauvegardes effectuées au préalable.
 
-Et enfin, dans cette partie, nous utiliserons un script
+## 4ème partie : Script pour modifier les droits des fichiers vitaux au docker compose
+
+Dans cette partie, nous utiliserons un script pour adapter les bons droits aux bons fichiers car certains ont besoin de droits spéciaux pour pouvoir être executer. C'est le cas des fichiers de mosquitto (1883) par exemple.
+
+Lors qu'ils sont copiées par Synology (Active Backup), l'utilisateur et le groupe deviennent ceux de l'utilisateur utilisé pour se connecter au VPS (dans notre cas : *almalinux*)
 
 [Script n°3](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script3.sh)
+
+Le script permet de :
+* Adapter les droits aux bons fichiers.
+
+## 5ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
+
+Enfin, une fois tous les fichiers restaurés et installés, il faut lancer les script permettant de restaurer les sauvegardes.
+
+Pour cela, nous allons utiliser deux scripts. L'un pour Redis&Postgres, l'autre pour InfluxDB.
+
+```
+sudo /home/almalinux/thomas/chirpstack/script_restore.sh
+```
+
+Puis, une fois la restauration terminée, on peut lancer le docker compose dans le dossier chirpstack qui contient les services suivant :
+* Chirpstack
+* Mosquitto
+* Postgres
+* Redis
+* Traefik
+
+```
+cd /home/almalinux/thomas/chirpstack/
+docker compose up -d
+```
+
+Puis pour la deuxième partie, il faut lancer déjà le docker compose dans le dossier iot-app qui content les services suivant :
+
+* InfluxDB
+* Grafana
+* Mosquitto
+* Telegraf
+
+```
+cd /home/almalinux/florent/iot-app/
+docker compose up -d
+```
+
