@@ -14,13 +14,21 @@ Puis de choisir <ins>AlmaLinux9</ins> et d'inserer la <ins>clé SSH publique</in
 
 Ensuite, une fois la machine remise à zéro, nous pouvons par la suite utiliser les différents scripts.
 
+Enfin, il faut penser à changer l'adresse IP du nom de domaine utilisé par nos VPS (soit directement sur le site d'OVH ou sinon par le biais d'un script DDNS).
+
 ## 2ème partie : Script pour la préparation serveur + mise en place d'une liaison OpenVPN
 
-Pour cette partie, nous devons utiliser un script qui permet de préparer la machine VPS pour qu'elle puisse ensuite être utilisé pour les autres parties.
+Pour cette partie, nous utiliserons un script qui permet de préparer la machine VPS pour qu'elle puisse ensuite être utilisé par la suite.
 
 [Script n°1](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script1.sh)
 
-Le script permet de charger la configuration d'OpenVPN, puis d'installer/configurer le firewall, OpenVPN et de faire en sorte que la liaison VPN soit prête à recevoir la connexion du NAS Synology.
+Le script permet de :
+* Chargement la configuration d'OpenVPN
+* Création d'un utilisateur utilisé pour la connexion VPN
+* Changement du hostname
+* Désactivation de l'IPv6 (du à un problème avec docker hub)
+* Installer / configurer le firewall
+* Installer / configurer OpenVPN
 
 Pour pouvoir utiliser ce script, il faut déjà pré-remplir les différentes variables accessibles au début du script en fonction de nos données (**adresse IP**, **nom d'utilisateur** ainsi que son **mot de passe**).
 
@@ -28,8 +36,22 @@ Les fichiers nécessaires pour OpenVPN sont : **ca.crt**, **dm.pem**, **server.c
 
 ## 3ème partie : Script pour la mise en place de docker ainsi que des différents fichiers qui sont liées à celui-ci
 
+Ensuite, dans cette partie, nous utiliserons un script pour préparer la machine VPS sur le plan docker et sauvegardes.
+
 [Script n°2](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script2.sh)
 
+Avant de lancer le script, il faut vérifier sur le Synology que nous sommes bien connecté sur le VPN du VPS. Vu que c'est
+
+Le script permet de :
+* Tester la liaison VPN avec le Synology
+* 
+*
+*
+*
+*
+
 ## 4ème partie : Restauration des base de données des différents services (Redis, PostGres & InfluxDB)
+
+Et enfin, dans cette partie, nous utiliserons un script
 
 [Script n°3](https://github.com/Grievous400/Projet-M1-TRI/blob/main/restauration/script3.sh)
